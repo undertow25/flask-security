@@ -89,8 +89,11 @@ def verify_password(password, salt=None, password_hash):
 
 
 def verify_and_update_password(password, user):
-    # if user model has salt attr...
-    verified, new_password = _pwd_context.verify_and_update(get_hmac(password), user.password)
+    if hasattr(user, 'salt'):
+        salt=user.salt
+    else:
+        salt = None
+    verified, new_password = _pwd_context.verify_and_update(get_hmac(password, salt), user.password)
     if verified and new_password:
         user.password = new_password
         _datastore.put(user)

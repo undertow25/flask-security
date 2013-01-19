@@ -69,24 +69,27 @@ def logout_user():
     _logout_user()
 
 
-def get_hmac(password):
+def get_hmac(password, salt=None):
     if _security.password_hash == 'plaintext':
         return password
 
-    if _security.password_salt is None:
-        raise RuntimeError('The configuration value `SECURITY_PASSWORD_SALT` '
-            'must not be None when the value of `SECURITY_PASSWORD_HASH` is '
-            'set to "%s"' % _security.password_hash)
+    if salt is None:
+        if _security.password_salt is None:
+            raise RuntimeError('The configuration value `SECURITY_PASSWORD_SALT` '
+                'must not be None when the value of `SECURITY_PASSWORD_HASH` is '
+                'set to "%s"' % _security.password_hash)
+        salt = _security.password_salt
 
-    h = hmac.new(_security.password_salt, password, hashlib.sha512)
+    h = hmac.new(salt, password, hashlib.sha512)
     return base64.b64encode(h.digest())
 
 
-def verify_password(password, password_hash):
-    return _pwd_context.verify(get_hmac(password), password_hash)
+def verify_password(password, salt=None, password_hash):
+    return _pwd_context.verify(get_hmac(password, salt), password_hash)
 
 
 def verify_and_update_password(password, user):
+    # if user model has salt attr...
     verified, new_password = _pwd_context.verify_and_update(get_hmac(password), user.password)
     if verified and new_password:
         user.password = new_password
@@ -94,8 +97,8 @@ def verify_and_update_password(password, user):
     return verified
 
 
-def encrypt_password(password):
-    return _pwd_context.encrypt(get_hmac(password))
+def encrypt_password(password, salt=None):
+    return _pwd_context.encrypt(get_hmac(password, salt))
 
 
 def md5(data):

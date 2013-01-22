@@ -88,20 +88,20 @@ class UniqueEmailFormMixin():
 
 
 class UsernameFormMixin():
-    email = TextField("Username",
+    username = TextField("Username",
         validators=[username_required])
 
 
 class UserUsernameFormMixin():
     user = None
-    email = TextField("Username",
+    username = TextField("Username",
         validators=[username_required,
                     valid_user_username])
 
 
 class UniqueUsernameFormMixin():
-    email = TextField("Username",
-        validators=[email_required,
+    username = TextField("Username",
+        validators=[username_required,
                     unique_user_email])
 
 

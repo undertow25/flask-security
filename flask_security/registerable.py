@@ -11,6 +11,7 @@
 
 from flask import current_app as app
 from werkzeug.local import LocalProxy
+import os
 
 from .confirmable import generate_confirmation_link
 from .signals import user_registered

@@ -27,6 +27,10 @@ email_required = Required(message='Email not provided')
 
 email_validator = Email(message='Invalid email address')
 
+username_required = Required(message='Username not provided')
+
+username_validator = Username(message='Invalid username')
+
 password_required = Required(message="Password not provided")
 
 
@@ -38,6 +42,18 @@ def unique_user_email(form, field):
 
 def valid_user_email(form, field):
     form.user = _datastore.find_user(email=field.data)
+    if form.user is None:
+        raise ValidationError('Specified user does not exist')
+
+
+def unique_user_username(form, field):
+    if _datastore.find_user(username=field.data) is not None:
+        raise ValidationError(field.data +
+                              ' is already associated with an account')
+
+
+def valid_user_username(form, field):
+    form.user = _datastore.find_user(username=field.data)
     if form.user is None:
         raise ValidationError('Specified user does not exist')
 
@@ -68,6 +84,27 @@ class UserEmailFormMixin():
 
 class UniqueEmailFormMixin():
     email = TextField("Email Address",
+        validators=[email_required,
+                    email_validator,
+                    unique_user_email])
+
+
+class UsernameFormMixin():
+    email = TextField("Username",
+        validators=[username_required,
+                    username_validator])
+
+
+class UserUsernameFormMixin():
+    user = None
+    email = TextField("Username",
+        validators=[username_required,
+                    username_validator,
+                    valid_user_username])
+
+
+class UniqueUsernameFormMixin():
+    email = TextField("Username",
         validators=[email_required,
                     email_validator,
                     unique_user_email])
@@ -184,7 +221,7 @@ class LoginForm(Form, NextFormMixin):
 
 
 class ConfirmRegisterForm(Form, RegisterFormMixin,
-                          UniqueEmailFormMixin, NewPasswordFormMixin, PasswordConfirmFormMixin):
+                          UniqueEmailFormMixin, UniqueUsernameFormMixin, NewPasswordFormMixin, PasswordConfirmFormMixin):
     pass
 
 class RegisterForm(ConfirmRegisterForm):

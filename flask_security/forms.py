@@ -29,8 +29,6 @@ email_validator = Email(message='Invalid email address')
 
 username_required = Required(message='Username not provided')
 
-username_validator = Username(message='Invalid username')
-
 password_required = Required(message="Password not provided")
 
 

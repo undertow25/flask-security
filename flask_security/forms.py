@@ -219,11 +219,11 @@ class LoginForm(Form, NextFormMixin):
         return True
 
 
-class ConfirmRegisterForm(Form, RegisterFormMixin,
-                          UniqueEmailFormMixin, UniqueUsernameFormMixin, NewPasswordFormMixin, PasswordConfirmFormMixin):
+class ConfirmRegisterForm(Form, RegisterFormMixin, UniqueEmailFormMixin, UniqueUsernameFormMixin,
+                            NewPasswordFormMixin, PasswordConfirmFormMixin, RecaptchaFormMixin):
     pass
 
-class RegisterForm(ConfirmRegisterForm, RecaptchaFormMixin):
+class RegisterForm(ConfirmRegisterForm):
     pass
 
 

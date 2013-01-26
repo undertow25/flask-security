@@ -135,6 +135,10 @@ class RegisterFormMixin():
         return dict((key, value.data) for key, value in fields)
 
 
+class RecaptchaFormMixin():
+    recaptcha = RecaptchaField()
+
+
 class SendConfirmationForm(Form, UserEmailFormMixin):
     """The default forgot password form"""
 
@@ -154,7 +158,7 @@ class SendConfirmationForm(Form, UserEmailFormMixin):
         return True
 
 
-class ForgotPasswordForm(Form, UserEmailFormMixin):
+class ForgotPasswordForm(Form, UserEmailFormMixin, RecaptchaFormMixin):
     """The default forgot password form"""
 
     submit = SubmitField("Recover Password")
@@ -219,7 +223,7 @@ class ConfirmRegisterForm(Form, RegisterFormMixin,
                           UniqueEmailFormMixin, UniqueUsernameFormMixin, NewPasswordFormMixin, PasswordConfirmFormMixin):
     pass
 
-class RegisterForm(ConfirmRegisterForm):
+class RegisterForm(ConfirmRegisterForm, RecaptchaFormMixin):
     pass
 
 

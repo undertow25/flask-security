@@ -14,7 +14,7 @@ import inspect
 from flask import request, current_app
 from flask.ext.wtf import Form as BaseForm, TextField, PasswordField, \
      SubmitField, HiddenField, Required, BooleanField, EqualTo, Email, \
-     ValidationError, Length, Field
+     ValidationError, Length, Field, RecaptchaField
 from werkzeug.local import LocalProxy
 
 from .confirmable import requires_confirmation

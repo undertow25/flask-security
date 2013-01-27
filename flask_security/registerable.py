@@ -12,6 +12,7 @@
 from flask import current_app as app
 from werkzeug.local import LocalProxy
 import os
+from datetime import datetime
 
 from .confirmable import generate_confirmation_link
 from .signals import user_registered
@@ -29,6 +30,7 @@ def register_user(**kwargs):
     mysalt = os.urandom(64).encode('base_64')
     kwargs['salt'] = mysalt
     kwargs['password'] = encrypt_password(kwargs['password'], mysalt)
+    kwargs['registered_on'] = datetime.utcnow()
     user = _datastore.create_user(**kwargs)
     _datastore.commit()
 

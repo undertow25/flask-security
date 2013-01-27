@@ -59,7 +59,7 @@ def generate_confirmation_token(user):
 
 def requires_confirmation(user):
     """Returns `True` if the user requires confirmation."""
-    return _security.confirmable and user.confirmed_at == None
+    return _security.confirmable and not user.is_confirmed()
 
 
 def confirm_email_token_status(token):
@@ -79,5 +79,6 @@ def confirm_user(user):
     :param user: The user to confirm
     """
     user.confirmed_at = datetime.utcnow()
+    user.status = user.get_active_status()
     _datastore.put(user)
     user_confirmed.send(user, app=app._get_current_object())
